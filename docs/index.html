@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donald — Godot Game Dev Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <span class="logo-icon">⬡</span>
+                <span>Donald</span>
+            </a>
+            <div class="nav-links">
+                <a href="#projects">Projects</a>
+                <a href="#skills">Skills</a>
+                <a href="#about">About</a>
+                <a href="https://github.com/donald" target="_blank" class="nav-github">GitHub</a>
+            </div>
+            <button class="nav-toggle" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-bg">
+            <canvas id="hero-canvas"></canvas>
+        </div>
+        <div class="hero-content">
+            <p class="hero-tag">Game Developer</p>
+            <h1>Building worlds with <span class="gradient-text">Godot Engine</span></h1>
+            <p class="hero-desc">5 projects showcasing systems design, shader programming, multiplayer networking, and tool development.</p>
+            <div class="hero-actions">
+                <a href="#projects" class="btn btn-primary">View Projects</a>
+                <a href="https://github.com/donald" target="_blank" class="btn btn-secondary">Source Code</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-num">5</span>
+                    <span class="stat-label">Projects</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-num">50+</span>
+                    <span class="stat-label">Scripts</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-num">10+</span>
+                    <span class="stat-label">Shaders</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="projects" class="projects">
+        <div class="section-header">
+            <p class="section-tag">Portfolio</p>
+            <h2>Featured Projects</h2>
+        </div>
+
+        <div class="project-card" data-project="voidlock">
+            <div class="project-visual">
+                <div class="project-icon voidlock-icon">
+                    <svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="30" stroke="currentColor" stroke-width="2"/><path d="M40 15L45 35H55L47 45L50 60L40 50L30 60L33 45L25 35H35Z" fill="currentColor" opacity="0.3" stroke="currentColor" stroke-width="1.5"/></svg>
+                </div>
+                <span class="project-num">01</span>
+            </div>
+            <div class="project-info">
+                <div class="project-tags">
+                    <span class="tag tag-genre">Action / Roguelite</span>
+                    <span class="tag tag-complexity">Medium</span>
+                </div>
+                <h3>Voidlock</h3>
+                <p class="project-subtitle">Top-Down Roguelite Shooter</p>
+                <p class="project-desc">Fast-paced top-down shooter with procedurally generated rooms, weapon upgrades, and boss fights. Enter the Gungeon meets Vampire Survivors in scope.</p>
+                <div class="project-features">
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>BSP Dungeon Generation</strong>
+                            <p>Binary space partition algorithm creates unique room layouts every run</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Finite State Machine AI</strong>
+                            <p>Modular state system for enemy behaviors — chasers, shooters, and bosses</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Weapon Resource System</strong>
+                            <p>Data-driven weapons using custom Resources with spread, fire rate, and projectile definitions</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Game Feel / Juice</strong>
+                            <p>Screen shake, hit flash shaders, CRT overlay, projectile trails, and camera smoothing</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-code">
+                    <div class="code-header">
+                        <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                        <span class="code-filename">state_machine.gd</span>
+                    </div>
+                    <pre><code><span class="kw">class_name</span> StateMachine <span class="kw">extends</span> Node
+
+<span class="kw">@export var</span> initial_state: State
+<span class="kw">var</span> current_state: State
+<span class="kw">var</span> states: Dictionary = {}
+
+<span class="kw">func</span> <span class="fn">_ready</span>() -> <span class="type">void</span>:
+    <span class="kw">for</span> child <span class="kw">in</span> get_children():
+        <span class="kw">if</span> child <span class="kw">is</span> State:
+            states[child.name.to_lower()] = child
+            child.transitioned.connect(_on_state_transitioned)
+    <span class="kw">if</span> initial_state:
+        initial_state.enter()
+        current_state = initial_state
+
+<span class="kw">func</span> <span class="fn">_on_state_transitioned</span>(state: State, new_state_name: String) -> <span class="type">void</span>:
+    <span class="kw">if</span> state != current_state:
+        <span class="kw">return</span>
+    <span class="kw">var</span> new_state = states.get(new_state_name.to_lower())
+    <span class="kw">if not</span> new_state:
+        <span class="kw">return</span>
+    current_state.exit()
+    new_state.enter()
+    current_state = new_state</code></pre>
+                </div>
+                <div class="project-arch">
+                    <h4>Architecture</h4>
+                    <div class="arch-tree">
+                        <div class="arch-item folder">voidlock/</div>
+                        <div class="arch-item indent-1 folder">scenes/</div>
+                        <div class="arch-item indent-2">player/ — CharacterBody2D, dash, shooting</div>
+                        <div class="arch-item indent-2">enemies/ — State machine AI system</div>
+                        <div class="arch-item indent-2">rooms/ — BSP dungeon generator</div>
+                        <div class="arch-item indent-2">managers/ — Game & audio autoloads</div>
+                        <div class="arch-item indent-1 folder">shaders/</div>
+                        <div class="arch-item indent-2">hit_flash.gdshader, crt_overlay.gdshader</div>
+                        <div class="arch-item indent-1 folder">resources/</div>
+                        <div class="arch-item indent-2">weapons/ & enemy_data/ (.tres)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card" data-project="hexforge">
+            <div class="project-visual">
+                <div class="project-icon hexforge-icon">
+                    <svg viewBox="0 0 80 80" fill="none"><polygon points="40,10 65,25 65,55 40,70 15,55 15,25" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.1"/><polygon points="40,20 55,28 55,48 40,56 25,48 25,28" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.15"/></svg>
+                </div>
+                <span class="project-num">02</span>
+            </div>
+            <div class="project-info">
+                <div class="project-tags">
+                    <span class="tag tag-genre">Strategy / Tactics</span>
+                    <span class="tag tag-complexity tag-medium-high">Medium-High</span>
+                </div>
+                <h3>Hexforge</h3>
+                <p class="project-subtitle">Turn-Based Strategy Game</p>
+                <p class="project-desc">Hex-grid tactics game with unique unit abilities, A* pathfinding, and a full turn/phase system. Clean UI with unit cards, ability tooltips, and turn indicators.</p>
+                <div class="project-features">
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Hex Grid Mathematics</strong>
+                            <p>Full cube coordinate system with axial-to-pixel conversion, neighbor lookup, and distance calculations</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>A* Pathfinding</strong>
+                            <p>Custom A* implementation with hex-specific heuristics and BFS reachability for movement ranges</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Turn/Phase System</strong>
+                            <p>SELECT → MOVE → ACTION → RESOLVE phase loop with team management and victory detection</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Ability System</strong>
+                            <p>Extensible ability architecture with cooldowns, range validation, and polymorphic execution</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-code">
+                    <div class="code-header">
+                        <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                        <span class="code-filename">hex_grid.gd</span>
+                    </div>
+                    <pre><code><span class="kw">static func</span> <span class="fn">axial_to_pixel</span>(q: <span class="type">int</span>, r: <span class="type">int</span>) -> <span class="type">Vector2</span>:
+    <span class="kw">var</span> x = TILE_SIZE.x * (<span class="num">3.0</span>/<span class="num">2.0</span> * q)
+    <span class="kw">var</span> y = TILE_SIZE.y * (sqrt(<span class="num">3.0</span>)/<span class="num">2.0</span> * q + sqrt(<span class="num">3.0</span>) * r)
+    <span class="kw">return</span> Vector2(x, y)
+
+<span class="kw">static func</span> <span class="fn">distance</span>(a: <span class="type">Vector2i</span>, b: <span class="type">Vector2i</span>) -> <span class="type">int</span>:
+    <span class="kw">return</span> (abs(a.x - b.x) + abs(a.x + a.y - b.x - b.y) + abs(a.y - b.y)) / <span class="num">2</span>
+
+<span class="kw">func</span> <span class="fn">find_path</span>(start: <span class="type">Vector2i</span>, goal: <span class="type">Vector2i</span>) -> Array[<span class="type">Vector2i</span>]:
+    <span class="kw">var</span> open_set: Array[Vector2i] = [start]
+    <span class="kw">var</span> came_from: Dictionary = {}
+    <span class="kw">var</span> g_score: Dictionary = {start: <span class="num">0</span>}
+    <span class="kw">while</span> open_set.size() > <span class="num">0</span>:
+        <span class="kw">var</span> current = _get_lowest_f(open_set, f_score)
+        <span class="kw">if</span> current == goal:
+            <span class="kw">return</span> _reconstruct_path(came_from, current)
+        <span class="cm">...</span></code></pre>
+                </div>
+                <div class="project-arch">
+                    <h4>Architecture</h4>
+                    <div class="arch-tree">
+                        <div class="arch-item folder">hexforge/</div>
+                        <div class="arch-item indent-1 folder">scenes/</div>
+                        <div class="arch-item indent-2">board/ — Hex grid, tile management</div>
+                        <div class="arch-item indent-2">units/ — Base unit, abilities system</div>
+                        <div class="arch-item indent-2">managers/ — Turn & battle managers</div>
+                        <div class="arch-item indent-1 folder">resources/</div>
+                        <div class="arch-item indent-2">units/ & abilities/ (.tres definitions)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card" data-project="netpulse">
+            <div class="project-visual">
+                <div class="project-icon netpulse-icon">
+                    <svg viewBox="0 0 80 80" fill="none"><circle cx="25" cy="30" r="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/><circle cx="55" cy="30" r="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/><circle cx="25" cy="55" r="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/><circle cx="55" cy="55" r="8" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/><line x1="33" y1="30" x2="47" y2="30" stroke="currentColor" stroke-width="1.5"/><line x1="25" y1="38" x2="25" y2="47" stroke="currentColor" stroke-width="1.5"/><line x1="55" y1="38" x2="55" y2="47" stroke="currentColor" stroke-width="1.5"/><line x1="33" y1="55" x2="47" y2="55" stroke="currentColor" stroke-width="1.5"/><line x1="31" y1="36" x2="49" y2="49" stroke="currentColor" stroke-width="1" stroke-dasharray="3"/><line x1="49" y1="36" x2="31" y2="49" stroke="currentColor" stroke-width="1" stroke-dasharray="3"/></svg>
+                </div>
+                <span class="project-num">03</span>
+            </div>
+            <div class="project-info">
+                <div class="project-tags">
+                    <span class="tag tag-genre">Party / Minigames</span>
+                    <span class="tag tag-complexity tag-high">High</span>
+                </div>
+                <h3>Netpulse</h3>
+                <p class="project-subtitle">Multiplayer Party Game</p>
+                <p class="project-desc">A collection of 3 quick minigames with real-time multiplayer (2–4 players) using Godot's ENet API. Features a lobby system, race, arena survival, and collection games.</p>
+                <div class="project-features">
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>ENet Networking</strong>
+                            <p>Host/join architecture with peer management, RPC registration, and connection handling</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Authority Model</strong>
+                            <p>Server-authoritative game flow with client-side prediction via MultiplayerSynchronizer</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Game Flow Manager</strong>
+                            <p>Automated minigame rotation with cumulative scoring and ranking system</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>3 Minigames</strong>
+                            <p>Race (finish-order scoring), Arena (shrinking zone survival), Collector (timed pickup)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-code">
+                    <div class="code-header">
+                        <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                        <span class="code-filename">network_manager.gd</span>
+                    </div>
+                    <pre><code><span class="kw">func</span> <span class="fn">host_game</span>() -> <span class="type">void</span>:
+    peer = ENetMultiplayerPeer.new()
+    peer.create_server(PORT, MAX_PLAYERS)
+    multiplayer.multiplayer_peer = peer
+    multiplayer.peer_connected.connect(_on_peer_connected)
+    multiplayer.peer_disconnected.connect(_on_peer_disconnected)
+
+<span class="kw">func</span> <span class="fn">join_game</span>(address: <span class="type">String</span>) -> <span class="type">void</span>:
+    peer = ENetMultiplayerPeer.new()
+    peer.create_client(address, PORT)
+    multiplayer.multiplayer_peer = peer
+
+<span class="decorator">@rpc</span>(<span class="str">"any_peer"</span>, <span class="str">"call_local"</span>, <span class="str">"reliable"</span>)
+<span class="kw">func</span> <span class="fn">register_player</span>(data: <span class="type">Dictionary</span>) -> <span class="type">void</span>:
+    <span class="kw">var</span> sender = multiplayer.get_remote_sender_id()
+    PlayerRegistry.add_player(sender, data)</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card" data-project="luminara">
+            <div class="project-visual">
+                <div class="project-icon luminara-icon">
+                    <svg viewBox="0 0 80 80" fill="none"><circle cx="40" cy="35" r="15" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.15"/><path d="M30 50 L25 70 L35 62 L40 72 L45 62 L55 70 L50 50" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.1"/><line x1="40" y1="10" x2="40" y2="15" stroke="currentColor" stroke-width="2"/><line x1="58" y1="17" x2="53" y2="22" stroke="currentColor" stroke-width="2"/><line x1="22" y1="17" x2="27" y2="22" stroke="currentColor" stroke-width="2"/><line x1="65" y1="35" x2="60" y2="35" stroke="currentColor" stroke-width="2"/><line x1="15" y1="35" x2="20" y2="35" stroke="currentColor" stroke-width="2"/></svg>
+                </div>
+                <span class="project-num">04</span>
+            </div>
+            <div class="project-info">
+                <div class="project-tags">
+                    <span class="tag tag-genre">Puzzle / Platformer</span>
+                    <span class="tag tag-complexity">Medium</span>
+                </div>
+                <h3>Luminara</h3>
+                <p class="project-subtitle">3D Puzzle Platformer</p>
+                <p class="project-desc">A 3D puzzle platformer where you manipulate light and shadows to create platforms and solve environmental puzzles. Focuses on visual quality and shader work across 5–8 handcrafted rooms.</p>
+                <div class="project-features">
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>3D Character Controller</strong>
+                            <p>Camera-relative movement, smooth rotation, gravity, jumping, and mouse-look</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Shadow Detection Shader</strong>
+                            <p>Custom spatial shader using light attenuation to detect shadows and activate platforms</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Puzzle Elements</strong>
+                            <p>Shadow platforms, light bridges, and mirrors with realistic light reflection physics</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Visual Effects</strong>
+                            <p>Volumetric light beams, dissolve shader for platform transitions, and post-processing</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-code">
+                    <div class="code-header">
+                        <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                        <span class="code-filename">shadow_detect.gdshader</span>
+                    </div>
+                    <pre><code><span class="kw">shader_type</span> spatial;
+<span class="kw">render_mode</span> unshaded;
+
+<span class="kw">uniform float</span> threshold : hint_range(<span class="num">0.0</span>, <span class="num">1.0</span>) = <span class="num">0.3</span>;
+<span class="kw">uniform vec4</span> shadow_color : source_color = <span class="kw">vec4</span>(<span class="num">0.2</span>, <span class="num">0.0</span>, <span class="num">0.4</span>, <span class="num">0.8</span>);
+<span class="kw">uniform vec4</span> lit_color : source_color = <span class="kw">vec4</span>(<span class="num">1.0</span>, <span class="num">1.0</span>, <span class="num">1.0</span>, <span class="num">0.0</span>);
+
+<span class="kw">varying float</span> light_amount;
+
+<span class="kw">void</span> <span class="fn">fragment</span>() {
+    ALBEDO = mix(shadow_color.rgb, lit_color.rgb, light_amount);
+    ALPHA = mix(shadow_color.a, lit_color.a, light_amount);
+}
+
+<span class="kw">void</span> <span class="fn">light</span>() {
+    light_amount = ATTENUATION.r;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="project-card" data-project="gdforge">
+            <div class="project-visual">
+                <div class="project-icon gdforge-icon">
+                    <svg viewBox="0 0 80 80" fill="none"><rect x="15" y="15" width="50" height="50" rx="6" stroke="currentColor" stroke-width="2" fill="currentColor" fill-opacity="0.08"/><rect x="22" y="28" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="22" y="46" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><rect x="48" y="36" width="16" height="10" rx="2" stroke="currentColor" stroke-width="1.5" fill="currentColor" fill-opacity="0.2"/><line x1="38" y1="33" x2="48" y2="40" stroke="currentColor" stroke-width="1.5"/><line x1="38" y1="51" x2="48" y2="44" stroke="currentColor" stroke-width="1.5"/></svg>
+                </div>
+                <span class="project-num">05</span>
+            </div>
+            <div class="project-info">
+                <div class="project-tags">
+                    <span class="tag tag-genre">Tool / Plugin</span>
+                    <span class="tag tag-complexity">Medium</span>
+                </div>
+                <h3>GDForge</h3>
+                <p class="project-subtitle">Visual Dialog Tree Editor</p>
+                <p class="project-desc">A Godot editor plugin providing a visual dialog/conversation tree editor. Nodes connect to form branching dialogues with conditions and variable checks. Exports to JSON.</p>
+                <div class="project-features">
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>EditorPlugin Integration</strong>
+                            <p>Full @tool plugin with bottom panel dock, custom types, and editor theme integration</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Visual Graph Editor</strong>
+                            <p>GraphEdit/GraphNode-based editor with dialog, condition, and choice node types</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Resource Serialization</strong>
+                            <p>Custom DialogTree resource with save/load and JSON export for runtime consumption</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <span class="feature-icon">◆</span>
+                        <div>
+                            <strong>Runtime Dialog System</strong>
+                            <p>DialogRunner with signal-driven flow, variable interpolation, and typewriter text UI</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="project-code">
+                    <div class="code-header">
+                        <span class="code-dot"></span><span class="code-dot"></span><span class="code-dot"></span>
+                        <span class="code-filename">dialog_runner.gd</span>
+                    </div>
+                    <pre><code><span class="kw">func</span> <span class="fn">_process_entry</span>() -> <span class="type">void</span>:
+    <span class="kw">var</span> entry = dialog_tree.get_entry(current_entry_id)
+    <span class="kw">if not</span> entry:
+        dialog_ended.emit()
+        <span class="kw">return</span>
+    <span class="kw">match</span> entry.type:
+        <span class="str">"dialog"</span>:
+            <span class="kw">var</span> text = _interpolate(entry.text)
+            line_displayed.emit(entry.speaker, text)
+        <span class="str">"condition"</span>:
+            <span class="kw">var</span> result = _evaluate(entry.condition)
+            <span class="kw">var</span> next = dialog_tree.get_next_entries(current_entry_id)
+            <span class="kw">for</span> conn <span class="kw">in</span> next:
+                <span class="kw">if</span> (result <span class="kw">and</span> conn.from_port == <span class="num">0</span>) <span class="kw">or</span> (<span class="kw">not</span> result <span class="kw">and</span> conn.from_port == <span class="num">1</span>):
+                    current_entry_id = conn.to_id
+                    _process_entry()
+                    <span class="kw">return</span>
+        <span class="str">"choice"</span>:
+            choices_presented.emit(entry.choices)</code></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="skills">
+        <div class="section-header">
+            <p class="section-tag">Expertise</p>
+            <h2>Technical Skills</h2>
+        </div>
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <h4>Systems Design</h4>
+                <p>State machines, component architectures, resource-driven data systems, and autoload patterns</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                </div>
+                <h4>Shader Programming</h4>
+                <p>GLSL shaders for hit flash, CRT effects, shadow detection, volumetric light, and dissolve transitions</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+                <h4>Multiplayer</h4>
+                <p>ENet networking, client-server authority, RPC calls, MultiplayerSynchronizer, lobby systems</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg>
+                </div>
+                <h4>3D Development</h4>
+                <p>CharacterBody3D, camera rigs, spatial shaders, raycasting, animation trees, and post-processing</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h4>Tool Development</h4>
+                <p>@tool scripting, EditorPlugin API, GraphEdit/GraphNode, custom inspectors, resource serialization</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                </div>
+                <h4>Procedural Generation</h4>
+                <p>BSP dungeon generation, hex grid mathematics, A* pathfinding, and noise-based algorithms</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about">
+        <div class="section-header">
+            <p class="section-tag">About</p>
+            <h2>About Me</h2>
+        </div>
+        <div class="about-content">
+            <p>I'm Donald, a game developer passionate about crafting engaging experiences with Godot Engine. My work spans systems design, shader programming, networking, and tool development. I believe in clean architecture, data-driven design, and making games that feel great to play.</p>
+            <div class="about-links">
+                <a href="https://github.com/donald" target="_blank" class="btn btn-primary">GitHub</a>
+                <a href="mailto:donald@example.com" class="btn btn-secondary">Contact</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p>Built with care. Powered by Godot 4.3.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
